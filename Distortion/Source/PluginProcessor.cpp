@@ -24,6 +24,7 @@ DistortionAudioProcessor::DistortionAudioProcessor()
                   )
 #endif
 {
+  state = new AudioProcessorValueTreeState(*this, nullptr);
 }
 
 DistortionAudioProcessor::~DistortionAudioProcessor()
@@ -183,8 +184,8 @@ void DistortionAudioProcessor::setStateInformation (const void* data, int sizeIn
   // whose contents will have been created by the getStateInformation() call.
 }
 
-AudioProcessorValueTreeState& getState() {
-  
+AudioProcessorValueTreeState& DistortionAudioProcessor::getState() {
+  return *state;
 }
 
 //==============================================================================

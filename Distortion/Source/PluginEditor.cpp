@@ -31,8 +31,10 @@ DistortionAudioProcessorEditor::DistortionAudioProcessorEditor (DistortionAudioP
   volumeSlider->setSliderStyle(Slider::Rotary);
   volumeSlider->setTextBoxStyle(Slider::NoTextBox, false, 0, 0);
   
-  driveAttachment = new AudioProcessorValueTreeState::SliderAttachment();
-  
+  driveAttachment = new AudioProcessorValueTreeState::SliderAttachment(p.getState(), "Drive", *driveSlider);
+  rangeAttachment = new AudioProcessorValueTreeState::SliderAttachment(p.getState(), "Range", *rangeSlider);
+  blendAttachment = new AudioProcessorValueTreeState::SliderAttachment(p.getState(), "Blend", *blendSlider);
+  volumeAttachment = new AudioProcessorValueTreeState::SliderAttachment(p.getState(), "Volume", *volumeSlider);
   
   // Make sure that before the constructor has finished, you've set the
   // editor's size to whatever you need it to be.
@@ -51,11 +53,18 @@ void DistortionAudioProcessorEditor::paint (Graphics& g)
   
   g.setColour (Colours::white);
   g.setFont (15.0f);
-  g.drawFittedText ("Hello World!", getLocalBounds(), Justification::centred, 1);
 }
 
 void DistortionAudioProcessorEditor::resized()
 {
   // This is generally where you'll want to lay out the positions of any
   // subcomponents in your editor..
+  const float offsetWidth = getWidth() / 5;
+  const float offsetHeight = getHeight() / 2;
+  const int size = 100;
+  
+  driveSlider->setBounds(offsetWidth * 1 - (size / 2), offsetHeight - (size / 2), size, size);
+  rangeSlider->setBounds(offsetWidth * 2 - (size / 2), offsetHeight - (size / 2), size, size);
+  blendSlider->setBounds(offsetWidth * 3 - (size / 2), offsetHeight - (size / 2), size, size);
+  volumeSlider->setBounds(offsetWidth * 4 - (size / 2), offsetHeight - (size / 2), size, size);
 }
