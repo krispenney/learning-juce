@@ -41,5 +41,7 @@ private:
   ScopedPointer<AudioProcessorValueTreeState::SliderAttachment> blendAttachment;
   ScopedPointer<AudioProcessorValueTreeState::SliderAttachment> volumeAttachment;
   
+  const int CONTROL_SIZE = 100;
+  
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (DistortionAudioProcessorEditor)
 };

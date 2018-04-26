@@ -48,11 +48,18 @@ DistortionAudioProcessorEditor::~DistortionAudioProcessorEditor()
 //==============================================================================
 void DistortionAudioProcessorEditor::paint (Graphics& g)
 {
+  const float offsetWidth = getWidth() / 5;
+  const float offsetHeight = getHeight() / 2 + 5;
+  
   // (Our component is opaque, so we must completely fill the background with a solid colour)
   g.fillAll (getLookAndFeel().findColour (ResizableWindow::backgroundColourId));
   
   g.setColour (Colours::white);
   g.setFont (15.0f);
+  g.drawText("Drive", offsetWidth * 1 - (CONTROL_SIZE / 2), offsetHeight, CONTROL_SIZE, CONTROL_SIZE, Justification::centred, false);
+  g.drawText("Range", offsetWidth * 2 - (CONTROL_SIZE / 2), offsetHeight, CONTROL_SIZE, CONTROL_SIZE, Justification::centred, false);
+  g.drawText("Blend", offsetWidth * 3 - (CONTROL_SIZE / 2), offsetHeight, CONTROL_SIZE, CONTROL_SIZE, Justification::centred, false);
+  g.drawText("Volume", offsetWidth * 4 - (CONTROL_SIZE / 2), offsetHeight, CONTROL_SIZE, CONTROL_SIZE, Justification::centred, false);
 }
 
 void DistortionAudioProcessorEditor::resized()
@@ -61,10 +68,10 @@ void DistortionAudioProcessorEditor::resized()
   // subcomponents in your editor..
   const float offsetWidth = getWidth() / 5;
   const float offsetHeight = getHeight() / 2;
-  const int size = 100;
   
-  driveSlider->setBounds(offsetWidth * 1 - (size / 2), offsetHeight - (size / 2), size, size);
-  rangeSlider->setBounds(offsetWidth * 2 - (size / 2), offsetHeight - (size / 2), size, size);
-  blendSlider->setBounds(offsetWidth * 3 - (size / 2), offsetHeight - (size / 2), size, size);
-  volumeSlider->setBounds(offsetWidth * 4 - (size / 2), offsetHeight - (size / 2), size, size);
+  
+  driveSlider->setBounds(offsetWidth * 1 - (CONTROL_SIZE / 2), offsetHeight - (CONTROL_SIZE / 2), CONTROL_SIZE, CONTROL_SIZE);
+  rangeSlider->setBounds(offsetWidth * 2 - (CONTROL_SIZE / 2), offsetHeight - (CONTROL_SIZE / 2), CONTROL_SIZE, CONTROL_SIZE);
+  blendSlider->setBounds(offsetWidth * 3 - (CONTROL_SIZE / 2), offsetHeight - (CONTROL_SIZE / 2), CONTROL_SIZE, CONTROL_SIZE);
+  volumeSlider->setBounds(offsetWidth * 4 - (CONTROL_SIZE / 2), offsetHeight - (CONTROL_SIZE / 2), CONTROL_SIZE, CONTROL_SIZE);
 }

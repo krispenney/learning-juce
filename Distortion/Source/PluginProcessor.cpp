@@ -25,6 +25,16 @@ DistortionAudioProcessor::DistortionAudioProcessor()
 #endif
 {
   state = new AudioProcessorValueTreeState(*this, nullptr);
+  state->createAndAddParameter("Drive", "Drive", "Drive", NormalisableRange<float>(0, 1, 0.001), 0.5, nullptr, nullptr);
+  state->createAndAddParameter("Range", "Range", "Range", NormalisableRange<float>(0, 3000, 0.001), 0.5, nullptr, nullptr);
+  state->createAndAddParameter("Blend", "Blend", "Blend", NormalisableRange<float>(0, 1, 0.001), 0.5, nullptr, nullptr);
+  state->createAndAddParameter("Volume", "Volume", "Volume", NormalisableRange<float>(0, 3, 0.001), 0.5, nullptr, nullptr);
+  
+  // This object overloads the operator=, this builds the index
+  state->state = ValueTree("Drive");
+  state->state = ValueTree("Range");
+  state->state = ValueTree("Blend");
+  state->state = ValueTree("Volume");
 }
 
 DistortionAudioProcessor::~DistortionAudioProcessor()
@@ -151,11 +161,22 @@ void DistortionAudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuf
   // the samples and the outer loop is handling the channels.
   // Alternatively, you can process the samples with the channels
   // interleaved by keeping the same state.
+  
+  float drive = *state->getRawParameterValue("Drive");
+  float range = *state->getRawParameterValue("Range");
+  float blend = *state->getRawParameterValue("Blend");
+  float volume = *state->getRawParameterValue("Volume");
+  
   for (int channel = 0; channel < totalNumInputChannels; ++channel)
   {
     auto* channelData = buffer.getWritePointer (channel);
     
-    // ..do something to the data...
+    for (int sample = 0; sample < buffer.getNumSamples(); ++sample) {
+      const float cleanSample = channelData[sample];
+      
+      channelData[sample] *= drive * range;
+      channelData[sample] = volume * ((blend * (2 / float_Pi) * atan(channelData[sample]) + (1 - blend) * cleanSample) / 2);
+    }
   }
 }
 
@@ -176,12 +197,19 @@ void DistortionAudioProcessor::getStateInformation (MemoryBlock& destData)
   // You should use this method to store your parameters in the memory block.
   // You could do that either as raw data, or use the XML or ValueTree classes
   // as intermediaries to make it easy to save and load complex data.
+  MemoryOutputStream stream(destData, false);
+  state->state.writeToStream(stream);
 }
 
 void DistortionAudioProcessor::setStateInformation (const void* data, int sizeInBytes)
 {
   // You should use this method to restore your parameters from this memory block,
   // whose contents will have been created by the getStateInformation() call.
+  ValueTree tree = ValueTree::readFromData(data, sizeInBytes);
+  
+  if (tree.isValid()) {
+    state->state = tree;
+  }
 }
 
 AudioProcessorValueTreeState& DistortionAudioProcessor::getState() {
